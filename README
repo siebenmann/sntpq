@@ -1,0 +1,40 @@
+== sntpq: a SNTP query program
+
+SNTP is the basic version of NTP that pretty much every NTP server
+responds to, even if they don't respond to queries from the venerable
+'ntpq' program. There are many SNTP clients that will set your system's
+time from one or more (S)NTP servers, but very few programs that will
+send a SNTP query to a (S)NTP server and tell you what it responds
+with. This is such a query program.
+
+A SNTP query cannot tell you a NTP server's list of peers and time
+sources, but it can report the server's current synchronization peer
+and various basic information. A typical example:
+
+ ; sntpq ns3.switch.ca
+ ns3.switch.ca:
+   Stratum:         3
+   Time Source:     206.108.0.134 ntp4.torix.ca (ce6c0086)
+   Time at xmit:    2018-12-19 19:40:10.247662067 +0000 UTC
+   RTT:             64.352066ms
+   Precision:       119ns
+   MinError:        0s
+   Clock updated:   2018-12-19 19:32:49.043288485 +0000 UTC
+   Root delay:      36.102294ms
+   Root dispersion: 500.656127ms
+   local root distance: 550.883307ms (via this server)
+   local adjustment:    -1.971151ms (based on this server's time)
+
+Interpreting many of these fields requires knowing something about NTP,
+which is out of scope for this README. Note that the 'Time Source' field
+only works for IPv4 time sources, because NTP transmits this information
+in a 32-bit field and there is no way to fully encode an IPv6 address
+into 32 bits. Chris Siebenmann doesn't know what shows up in this field
+for IPv6 time sources, so sntpq right now will try to treat them as IPv4
+addresses which will probably not work very well.
+
+sntpq has a convenient '-f' option that will follow the chain of
+time sources until they run out (or you hit a time source that you can't
+query). You can do this by hand, but -f takes the tedium out of it.
+
+	- Chris Siebenmann, December 19 2018
