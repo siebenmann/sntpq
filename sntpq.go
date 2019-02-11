@@ -151,7 +151,7 @@ func reportOn(host string, recurs bool, rlimit int) {
 		return
 	}
 	addr := genAddr(bts)
-	reportOn(addr, recurs, rlimit - 1)
+	reportOn(addr, recurs, rlimit-1)
 }
 
 func main() {
