@@ -93,6 +93,16 @@ func maybeHostname(host string) string {
 	return r[0][:len(r[0])-1]
 }
 
+// From RFC 5905
+// https://tools.ietf.org/html/rfc5905
+// <cks> has modified the output a bit.
+var leapNames = map[int]string{
+	0: "no leap second",
+	1: "+1 leap second",
+	2: "-1 leap second",
+	3: "state unknown (clock unsynchronized)",
+}
+
 // As a precaution against badly formed NTP server chains, we limit
 // how many recursion steps we're willing to make. You might think
 // that we could insist on an always-decreasing stratum, but in
@@ -140,7 +150,9 @@ func reportOn(host string, recurs bool, rlimit int) {
 	fmt.Printf("  local root distance: %s (via this server)\n", resp.RootDistance)
 	fmt.Printf("  local adjustment:    %s (based on this server's time)\n", resp.ClockOffset)
 	if resp.Leap != 0 {
-		fmt.Printf("  Leap second marker: %d\n", resp.Leap)
+		// Meanings of leap second markers is taken from RFC 5905.
+		// This format is a bit questionable and may change.
+		fmt.Printf("  Leap second marker: %d     %s\n", resp.Leap, leapNames[int(resp.Leap)])
 	}
 
 	if !recurs || err != nil || rlimit == 0 || resp.Stratum <= 1 {
