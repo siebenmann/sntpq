@@ -168,7 +168,7 @@ func reportOn(host string, recurs bool, rlimit int) {
 
 func main() {
 	var help, recurs bool
-	log.SetPrefix("ntpq: ")
+	log.SetPrefix("sntpq: ")
 	log.SetFlags(0)
 
 	getopt.FlagLong(&help, "help", 'h', "Print this help")
